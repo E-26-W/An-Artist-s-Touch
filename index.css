@@ -1,0 +1,1232 @@
+﻿/* ============================================================
+   An Artist's Touch — Shared Stylesheet
+   Visual identity: contemporary fine-art editorial
+   Palette: warm ivory, charcoal, muted earthy tones
+   ============================================================ */
+
+/* ----------------------------------------------------------
+   1. Design tokens
+   ---------------------------------------------------------- */
+:root {
+  /* Colour — light theme (default) */
+  --clr-bg:        #f8f5f0;   /* warm ivory */
+  --clr-surface:   #efebe4;   /* slightly deeper ivory */
+  --clr-border:    #d9cfc3;   /* muted warm grey */
+  --clr-ink:       #2b2b2b;   /* near-charcoal */
+  --clr-ink-soft:  #5c5550;   /* secondary text */
+  --clr-accent:    #8b6f5e;   /* muted terracotta */
+  --clr-accent-lt: #c4a99a;   /* light terracotta */
+  --clr-white:     #ffffff;
+  --clr-nav-bg:    #f8f5f0;   /* nav background (matches --clr-bg) */
+  --clr-shadow:    rgba(0 0 0 / 0.06);
+
+  /* Typography */
+  --font-script: 'Allura', 'Cormorant Garamond', Georgia, cursive;
+  --font-serif:  'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+  --font-sans:   'Manrope', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --font-arabic: 'Vazirmatn', 'IBM Plex Sans Arabic', 'Tajawal', system-ui, sans-serif;
+  /* Arabic display headings — calligraphic Naskh (Amiri) */
+  --font-arabic-display: 'Amiri', 'Vazirmatn', 'IBM Plex Sans Arabic', serif;
+
+  /* Scale */
+  --text-xs:   0.75rem;
+  --text-sm:   0.875rem;
+  --text-base: 1rem;
+  --text-lg:   1.125rem;
+  --text-xl:   1.375rem;
+  --text-2xl:  1.75rem;
+  --text-3xl:  2.25rem;
+  --text-4xl:  3rem;
+  --text-5xl:  4rem;
+
+  /* Spacing */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+
+  /* Layout */
+  --max-width: 1200px;
+  --nav-height: 72px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast:   150ms;
+  --duration-normal: 280ms;
+  --duration-slow:   500ms;
+}
+
+/* Dark theme — applied when <html data-theme="dark">.
+   Only colour tokens are overridden; the typography variables
+   above are inherited unchanged so fonts stay consistent in both
+   light and dark themes. */
+[data-theme="dark"] {
+  --clr-bg:        #1a1714;   /* deep warm charcoal */
+  --clr-surface:   #242019;   /* slightly lighter charcoal */
+  --clr-border:    #3a342e;   /* muted dark border */
+  --clr-ink:       #ede8e1;   /* warm off-white */
+  --clr-ink-soft:  #9e958c;   /* secondary text */
+  --clr-accent:    #c4a99a;   /* lighter terracotta for dark bg */
+  --clr-accent-lt: #8b6f5e;   /* deeper terracotta as subdued accent */
+  --clr-white:     #ffffff;
+  --clr-nav-bg:    #1a1714;
+  --clr-shadow:    rgba(0 0 0 / 0.25);
+}
+
+
+/* ----------------------------------------------------------
+   2. Reset & base
+   ---------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--clr-bg);
+  color: var(--clr-ink);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: 1.7;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Arabic language overrides */
+[lang="ar"] body,
+[lang="ar"] .nav-links,
+[lang="ar"] .footer-inner {
+  font-family: var(--font-arabic);
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font: inherit;
+}
+
+
+/* ----------------------------------------------------------
+   3. Focus styles
+   Visible for keyboard users, invisible on mouse click.
+   Offset keeps the outline clear of the element's own border.
+   ---------------------------------------------------------- */
+:focus { outline: none; }
+
+:focus-visible {
+  outline: 2px solid var(--clr-accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Buttons already have a border-radius of 2px, so the
+   default :focus-visible rule above is sufficient.
+   Nav links get a slightly tighter offset so the outline
+   tracks the underline position more naturally. */
+.nav-links a:focus-visible,
+.footer-links a:focus-visible {
+  outline-offset: 4px;
+}
+
+/* The language toggle sits inside the nav and has its own
+   border, so raise contrast by using a solid fill fallback. */
+.lang-toggle:focus-visible {
+  outline: 2px solid var(--clr-accent);
+  outline-offset: 2px;
+}
+
+
+/* ----------------------------------------------------------
+   4. Typography helpers
+   ---------------------------------------------------------- */
+.serif { font-family: var(--font-serif); }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--clr-ink);
+}
+
+/* Arabic display headings — Amiri (calligraphic Naskh).
+   No letter-spacing: Arabic is a connected script, so tracking
+   would separate joined letterforms. Hierarchy comes from weight
+   (bold for major, regular for secondary) and font size. */
+[lang="ar"] h1,
+[lang="ar"] h2 {
+  font-family: var(--font-arabic-display);
+  font-weight: 700;
+}
+
+[lang="ar"] h3,
+[lang="ar"] h4,
+[lang="ar"] h5,
+[lang="ar"] h6 {
+  font-family: var(--font-arabic-display);
+  font-weight: 400;
+}
+
+/* Reusable decorative heading — a calligraphic script in English
+   (Allura) and an artistic Arabic treatment. Use sparingly, only
+   for the most expressive headings; never on paragraphs or small
+   interface text. The fallback chain keeps text readable if a web
+   font fails to load. */
+.heading-script {
+  font-family: var(--font-script);
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+[lang="ar"] .heading-script {
+  font-family: var(--font-arabic-display);
+  font-weight: 700;
+  font-style: italic;
+}
+
+/* Homepage hero title — Cormorant Garamond (English), matching the
+   page-hero titles; Arabic uses the Amiri display treatment below. */
+.hero__title {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(var(--text-3xl), 6vw, var(--text-5xl));
+}
+
+[lang="ar"] .hero__title {
+  font-family: var(--font-arabic-display);
+  font-weight: 700;
+  font-style: italic;
+}
+
+.text-muted  { color: var(--clr-ink-soft); }
+.text-accent { color: var(--clr-accent); }
+.text-center { text-align: center; }
+.text-sm     { font-size: var(--text-sm); }
+
+.section-label {
+  display: inline-block;
+  font-size: var(--text-xs);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--clr-accent);
+  font-family: var(--font-sans);
+  margin-bottom: var(--space-3);
+}
+
+[lang="ar"] .section-label {
+  letter-spacing: 0;
+  font-family: var(--font-arabic);
+}
+
+
+/* ----------------------------------------------------------
+   5. Layout utilities
+   ---------------------------------------------------------- */
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding-inline: var(--space-8);
+}
+
+.main-content {
+  flex: 1;
+  padding-top: var(--nav-height);
+}
+
+.section {
+  padding-block: var(--space-16);
+}
+
+.section--tight {
+  padding-block: var(--space-12);
+}
+
+.divider {
+  width: 48px;
+  height: 1px;
+  background-color: var(--clr-accent);
+  margin-block: var(--space-6);
+}
+
+[lang="ar"] .divider,
+.text-center .divider {
+  margin-inline: auto;
+}
+
+
+/* ----------------------------------------------------------
+   6. Navigation
+   ---------------------------------------------------------- */
+.site-nav {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: var(--nav-height);
+  background-color: var(--clr-nav-bg);
+  border-bottom: 1px solid var(--clr-border);
+  z-index: 100;
+  transition: box-shadow var(--duration-normal) var(--ease),
+              background-color var(--duration-normal) var(--ease),
+              border-color var(--duration-normal) var(--ease);
+}
+
+.site-nav.scrolled {
+  box-shadow: 0 2px 16px var(--clr-shadow);
+}
+
+.nav-inner {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  font-family: var(--font-serif);
+  font-size: var(--text-xl);
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: var(--clr-ink);
+  transition: color var(--duration-fast) var(--ease);
+}
+
+[lang="ar"] .nav-logo {
+  font-family: var(--font-arabic-display);
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.nav-logo:hover { color: var(--clr-accent); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.nav-links a {
+  font-size: var(--text-sm);
+  letter-spacing: 0.06em;
+  color: var(--clr-ink-soft);
+  transition: color var(--duration-fast) var(--ease);
+  position: relative;
+}
+
+[lang="ar"] .nav-links a {
+  letter-spacing: 0;
+  font-size: var(--text-base);
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  inset-block-end: -3px;
+  inset-inline-start: 0;
+  width: 0;
+  height: 1px;
+  background-color: var(--clr-accent);
+  transition: width var(--duration-normal) var(--ease);
+}
+
+.nav-links a:hover,
+.nav-links a[aria-current="page"] {
+  color: var(--clr-ink);
+}
+
+.nav-links a:hover::after,
+.nav-links a[aria-current="page"]::after {
+  width: 100%;
+}
+
+/* Language toggle */
+.lang-toggle {
+  font-size: var(--text-sm);
+  letter-spacing: 0.08em;
+  /* Light theme: nav bg is near-white — black text for maximum contrast */
+  color: #000000;
+  border: 1px solid var(--clr-accent-lt);
+  padding: var(--space-1) var(--space-3);
+  border-radius: 2px;
+  transition: background-color var(--duration-fast) var(--ease),
+              color var(--duration-fast) var(--ease);
+}
+
+/* Dark theme: nav bg is near-black — restore legible light ink */
+[data-theme="dark"] .lang-toggle {
+  color: var(--clr-ink);
+}
+
+.lang-toggle:hover,
+[data-theme="dark"] .lang-toggle:hover {
+  background-color: var(--clr-accent);
+  color: #C49A45;
+}
+
+/* Show desktop toggle only above 768px; hide the mobile-drawer one */
+.nav-lang-mobile { display: none; }
+
+/* Mobile nav toggle */
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  padding: var(--space-2);
+}
+
+.nav-hamburger span {
+  display: block;
+  width: 24px;
+  height: 1.5px;
+  background-color: var(--clr-ink);
+  transition: transform var(--duration-normal) var(--ease),
+              opacity var(--duration-normal) var(--ease);
+}
+
+.nav-hamburger[aria-expanded="true"] span:nth-child(1) {
+  transform: translateY(6.5px) rotate(45deg);
+}
+.nav-hamburger[aria-expanded="true"] span:nth-child(2) {
+  opacity: 0;
+}
+.nav-hamburger[aria-expanded="true"] span:nth-child(3) {
+  transform: translateY(-6.5px) rotate(-45deg);
+}
+
+/* Theme toggle button */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: var(--clr-ink-soft);
+  border-radius: 2px;
+  transition: color var(--duration-fast) var(--ease);
+  flex-shrink: 0;
+}
+
+.theme-toggle:hover {
+  color: var(--clr-accent);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--clr-accent);
+  outline-offset: 2px;
+}
+
+.theme-toggle svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+  display: block;
+}
+
+/* Show sun icon in dark mode, moon icon in light mode */
+.theme-toggle .icon-moon { display: block; }
+.theme-toggle .icon-sun  { display: none;  }
+
+[data-theme="dark"] .theme-toggle .icon-moon { display: none;  }
+[data-theme="dark"] .theme-toggle .icon-sun  { display: block; }
+
+/* nav-actions: holds lang toggle, theme toggle, hamburger */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+
+/* ----------------------------------------------------------
+   7. Footer
+   ---------------------------------------------------------- */
+.site-footer {
+  border-top: 1px solid var(--clr-border);
+  padding-block: var(--space-8);
+  margin-top: auto;
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  font-size: var(--text-sm);
+  color: var(--clr-ink-soft);
+}
+
+/* Footer brand — the site title; uses the display font,
+   mirroring the .nav-logo brand for consistency. */
+.footer-brand {
+  font-family: var(--font-serif);
+}
+
+[lang="ar"] .footer-brand {
+  font-family: var(--font-arabic-display);
+}
+
+.footer-links {
+  display: flex;
+  gap: var(--space-6);
+}
+
+.footer-links a {
+  transition: color var(--duration-fast) var(--ease);
+}
+
+.footer-links a:hover { color: var(--clr-accent); }
+
+/* Social media links */
+.footer-social {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.footer-social__label {
+  font-size: var(--text-sm);
+  color: var(--clr-ink-soft);
+  white-space: nowrap;
+}
+
+.footer-social__links {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.footer-social__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: var(--clr-ink-soft);
+  border-radius: 2px;
+  transition: color var(--duration-fast) var(--ease);
+}
+
+.footer-social__link svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+  display: block;
+  flex-shrink: 0;
+}
+
+.footer-social__link:hover {
+  color: var(--clr-accent);
+}
+
+.footer-social__link:focus-visible {
+  outline: 2px solid var(--clr-accent);
+  outline-offset: 2px;
+}
+
+
+/* ----------------------------------------------------------
+   8. Buttons
+   ---------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-8);
+  font-size: var(--text-sm);
+  letter-spacing: 0.08em;
+  transition: background-color var(--duration-normal) var(--ease),
+              color var(--duration-normal) var(--ease),
+              border-color var(--duration-normal) var(--ease);
+  border-radius: 2px;
+}
+
+[lang="ar"] .btn {
+  letter-spacing: 0;
+  font-family: var(--font-arabic);
+}
+
+.btn--primary {
+  background-color: var(--clr-ink);
+  color: #C49A45;
+  border: 1px solid var(--clr-ink);
+}
+
+.btn--primary:hover {
+  background-color: var(--clr-accent);
+  border-color: var(--clr-accent);
+  color: #C49A45;
+}
+
+/* Dark mode: --clr-ink flips to near-white, so the primary button
+   background becomes light — switch to black text for legibility. */
+[data-theme="dark"] .btn--primary {
+  color: #000000;
+}
+
+[data-theme="dark"] .btn--primary:hover {
+  color: #C49A45;
+}
+
+.btn--outline {
+  background-color: transparent;
+  /* Light mode: page/surface bg is near-white — use black text */
+  color: #000000;
+  border: 1px solid var(--clr-ink);
+}
+
+/* Dark mode: page bg is near-black — restore legible light ink */
+[data-theme="dark"] .btn--outline {
+  color: var(--clr-ink);
+  border-color: var(--clr-ink);
+}
+
+.btn--outline:hover {
+  background-color: var(--clr-ink);
+  color: #C49A45;
+}
+
+/* Dark mode: --clr-ink flips to near-white on hover — use black text */
+[data-theme="dark"] .btn--outline:hover {
+  color: #000000;
+}
+
+
+/* ----------------------------------------------------------
+   9. Page hero (shared)
+   ---------------------------------------------------------- */
+.page-hero {
+  padding-block: var(--space-24) var(--space-16);
+  border-bottom: 1px solid var(--clr-border);
+}
+
+.page-hero__eyebrow {
+  font-size: var(--text-xs);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--clr-accent);
+  margin-bottom: var(--space-4);
+  font-family: var(--font-sans);
+}
+
+[lang="ar"] .page-hero__eyebrow {
+  letter-spacing: 0;
+  font-family: var(--font-arabic);
+}
+
+.page-hero__title {
+  font-family: var(--font-serif);
+  font-size: clamp(var(--text-3xl), 6vw, var(--text-5xl));
+  font-weight: 600;
+  color: var(--clr-ink);
+}
+
+[lang="ar"] .page-hero__title {
+  font-family: var(--font-arabic-display);
+  font-weight: 700;
+  font-style: italic;
+}
+
+
+/* ----------------------------------------------------------
+   10. Cards (generic)
+   ---------------------------------------------------------- */
+.card {
+  background-color: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  overflow: hidden;
+  transition: box-shadow var(--duration-normal) var(--ease),
+              transform var(--duration-normal) var(--ease);
+}
+
+.card:hover {
+  box-shadow: 0 8px 32px rgba(0 0 0 / 0.08);
+  transform: translateY(-2px);
+}
+
+.card__image-wrap {
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background-color: var(--clr-border);
+}
+
+.card__image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--duration-slow) var(--ease);
+}
+
+.card:hover .card__image-wrap img {
+  transform: scale(1.03);
+}
+
+.card__body {
+  padding: var(--space-6);
+}
+
+.card__title {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: var(--text-xl);
+  margin-bottom: var(--space-2);
+}
+
+[lang="ar"] .card__title {
+  font-family: var(--font-arabic-display);
+}
+
+.card__meta {
+  font-size: var(--text-sm);
+  color: var(--clr-ink-soft);
+}
+
+
+/* ----------------------------------------------------------
+   11. Responsive
+   ---------------------------------------------------------- */
+
+/* Backdrop element is hidden at desktop widths */
+.nav-backdrop {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding-inline: var(--space-6);
+  }
+
+  .section {
+    padding-block: var(--space-12);
+  }
+
+  /* Task 1: on mobile show the in-drawer toggle, hide the desktop one */
+  .nav-lang-mobile  { display: list-item; }
+  .nav-lang-desktop { display: none; }
+
+  /* Mobile nav */
+  .nav-hamburger {
+    display: flex;
+  }
+
+  /* Collapsed state: slide up out of view, hidden from AT */
+  .nav-links {
+    position: fixed;
+    top: var(--nav-height);
+    left: 0;
+    right: 0;
+    max-height: calc(100dvh - var(--nav-height));
+    overflow-y: auto;
+    background-color: var(--clr-nav-bg);
+    border-bottom: 1px solid var(--clr-border);
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--space-6) var(--space-8) var(--space-8);
+    gap: var(--space-6);
+    transform: translateY(-110%);
+    visibility: hidden;
+    transition: transform var(--duration-normal) var(--ease),
+                visibility 0s var(--duration-normal);
+    z-index: 99;
+  }
+
+  /* Open state: slide down into view */
+  .nav-links.is-open {
+    transform: translateY(0);
+    visibility: visible;
+    transition: transform var(--duration-normal) var(--ease),
+                visibility 0s 0s;
+  }
+
+  /* Task 2: backdrop behind open mobile menu */
+  .nav-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    top: var(--nav-height);
+    background-color: rgba(0 0 0 / 0.35);
+    z-index: 98;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--duration-normal) var(--ease),
+                visibility 0s var(--duration-normal);
+  }
+
+  .nav-backdrop.is-open {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity var(--duration-normal) var(--ease),
+                visibility 0s 0s;
+  }
+
+  .footer-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+
+  [lang="ar"] .footer-inner {
+    align-items: flex-end;
+  }
+
+  /* Social links: stack label above icons on mobile */
+  .footer-social {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+
+  [lang="ar"] .footer-social {
+    align-items: flex-end;
+  }
+
+  /* RTL: align mobile menu items to the end */
+  [lang="ar"] .nav-links {
+    align-items: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding-inline: var(--space-4);
+  }
+}
+
+
+/* ----------------------------------------------------------
+   12a. Artworks grid & filter chips
+   ---------------------------------------------------------- */
+
+/* Filter toolbar */
+.artworks-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: var(--space-6) 0;
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding-inline: var(--space-8);
+}
+
+@media (max-width: 768px) {
+  .artworks-filter {
+    padding-inline: var(--space-6);
+  }
+}
+
+@media (max-width: 480px) {
+  .artworks-filter {
+    padding-inline: var(--space-4);
+  }
+}
+
+.filter-chip {
+  font-size: var(--text-sm);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--clr-border);
+  border-radius: 999px;
+  color: var(--clr-ink-soft);
+  background: transparent;
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease),
+              color var(--duration-fast) var(--ease),
+              border-color var(--duration-fast) var(--ease);
+}
+
+[lang="ar"] .filter-chip {
+  font-family: var(--font-arabic);
+}
+
+.filter-chip:hover {
+  border-color: var(--clr-accent);
+  color: var(--clr-accent);
+}
+
+.filter-chip.is-active {
+  background-color: var(--clr-ink);
+  border-color: var(--clr-ink);
+  color: var(--clr-bg);
+}
+
+[data-theme="dark"] .filter-chip.is-active {
+  color: var(--clr-bg);
+}
+
+/* Artworks grid — responsive 3-col masonry-ish */
+.artworks-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-6);
+}
+
+@media (max-width: 1024px) {
+  .artworks-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .artworks-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Gallery masonry-style grid */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 220px;
+  gap: var(--space-3);
+}
+
+.gallery-item {
+  overflow: hidden;
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+}
+
+.gallery-item.span-2 {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.gallery-item.span-v {
+  grid-row: span 2;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--duration-slow) var(--ease),
+              filter var(--duration-normal) var(--ease);
+  display: block;
+}
+
+.gallery-item:hover img {
+  transform: scale(1.05);
+  filter: brightness(0.85);
+}
+
+.gallery-item figcaption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--space-3) var(--space-4);
+  background: linear-gradient(transparent, rgba(0,0,0,0.6));
+  color: #fff;
+  font-size: var(--text-sm);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity var(--duration-normal) var(--ease),
+              transform var(--duration-normal) var(--ease);
+}
+
+.gallery-item:hover figcaption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 1024px) {
+  .gallery-grid {
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 180px;
+  }
+}
+
+@media (max-width: 768px) {
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 160px;
+  }
+  .gallery-item.span-2 {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: 130px;
+  }
+}
+
+/* Gallery lightbox */
+.lightbox-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.lightbox-overlay.is-open {
+  display: flex;
+}
+
+.lightbox-overlay img {
+  max-width: 90vw;
+  max-height: 85vh;
+  object-fit: contain;
+  border-radius: 2px;
+}
+
+.lightbox-caption {
+  color: #fff;
+  font-size: var(--text-sm);
+  opacity: 0.75;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-6);
+  font-size: 2rem;
+  color: #fff;
+  background: none;
+  border: none;
+  cursor: pointer;
+  line-height: 1;
+  opacity: 0.75;
+  transition: opacity var(--duration-fast);
+}
+
+.lightbox-close:hover { opacity: 1; }
+
+[dir="rtl"] .lightbox-close {
+  right: auto;
+  left: var(--space-6);
+}
+
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  border: none;
+  font-size: 2rem;
+  padding: var(--space-2) var(--space-4);
+  cursor: pointer;
+  border-radius: 2px;
+  transition: background var(--duration-fast);
+}
+
+.lightbox-nav:hover { background: rgba(255,255,255,0.25); }
+.lightbox-nav--prev { left: var(--space-4); }
+.lightbox-nav--next { right: var(--space-4); }
+
+/* Journey timeline */
+.journey-timeline {
+  position: relative;
+  padding-inline-start: var(--space-8);
+}
+
+.journey-timeline::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 1px;
+  background-color: var(--clr-border);
+}
+
+.journey-milestone {
+  position: relative;
+  padding-bottom: var(--space-12);
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.journey-milestone::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: calc(-1 * var(--space-8));
+  top: 8px;
+  width: 10px;
+  height: 10px;
+  background-color: var(--clr-accent);
+  border-radius: 50%;
+  border: 2px solid var(--clr-bg);
+  box-shadow: 0 0 0 1px var(--clr-accent);
+  margin-inline-start: -4px;
+}
+
+.journey-milestone__year {
+  font-family: var(--font-serif);
+  font-size: var(--text-xl);
+  color: var(--clr-accent);
+  font-weight: 500;
+  display: block;
+  padding-top: 2px;
+}
+
+[lang="ar"] .journey-milestone__year {
+  font-family: var(--font-arabic-display);
+}
+
+.journey-milestone__title {
+  font-family: var(--font-serif);
+  font-size: var(--text-lg);
+  font-weight: 500;
+  margin-bottom: var(--space-2);
+  color: var(--clr-ink);
+}
+
+[lang="ar"] .journey-milestone__title {
+  font-family: var(--font-arabic-display);
+}
+
+@media (max-width: 600px) {
+  .journey-milestone {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+}
+
+/* Homepage hero enhancements */
+.hero.section {
+  padding-top: calc(var(--nav-height) + var(--space-24));
+  padding-bottom: var(--space-24);
+  border-bottom: 1px solid var(--clr-border);
+}
+
+.hero__actions {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-top: var(--space-8);
+}
+
+/* Homepage preview grid for artworks */
+.artworks-preview__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-6);
+  margin-block: var(--space-8);
+}
+
+@media (max-width: 1024px) {
+  .artworks-preview__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .artworks-preview__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Gallery preview strip on homepage */
+.gallery-preview__strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-3);
+  margin-block: var(--space-8);
+  overflow: hidden;
+}
+
+.gallery-preview__item {
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.gallery-preview__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--duration-slow) var(--ease);
+}
+
+.gallery-preview__item:hover img {
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .gallery-preview__strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .hero__actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* ----------------------------------------------------------
+   12. Reduced motion
+   Disables smooth scrolling and all non-essential transitions
+   for users who have requested reduced motion in their OS.
+   ---------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  /* Keep the mobile menu usable: skip the slide animation
+     but still toggle visibility so it appears/disappears
+     instantly rather than hanging in a broken state. */
+  .nav-links {
+    transition: visibility 0s !important;
+  }
+
+  .nav-links.is-open {
+    transform: translateY(0);
+    transition: visibility 0s !important;
+  }
+
+  .nav-backdrop,
+  .nav-backdrop.is-open {
+    transition: visibility 0s !important;
+  }
+}
